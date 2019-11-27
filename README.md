@@ -1,4 +1,4 @@
-# Propper 2.0
+# Propper 3.0
 
 This is a reduced version of Propper, a library intended to enforce type constratints
 on class properties, and set type and default value with one stroke. 
@@ -155,3 +155,11 @@ the following signatures allow you to config parametrically:
 * `.addProp(name, defaultValue, config<object>)`
 * `.addProp(name, defaultValue, type, config<object>)`
 
+Since you are in the "advanced" section, one pro tip - the result of validationErrors
+is passed to onBadValue as the third parameter. So if you want super fantastic 
+error handling the two methods can intercommunicate. 
+
+## Schema
+
+As a little easter egg all the properties defined using .addProp
+are stored in a `__schema` map attached to the prototype of your class. 

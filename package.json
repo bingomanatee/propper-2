@@ -1,6 +1,6 @@
 {
   "name": "@wonderlandlabs/propper",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "a utility to define properties for classes",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -32,5 +32,5 @@
   },
   "author": "David Edelhart",
   "license": "MIT",
-  "repository": "https://github.com/bingomanatee/rollup-starter-kit"
+  "repository": "https://github.com/bingomanatee/propper-3"
 }
