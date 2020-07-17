@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "test": "yarn build; tap test test/*",
+    "test!": "tap test test/*",
     "build": "node_modules/rollup/dist/bin/rollup -c='rollup.config.js'"
   },
   "dependencies": {
@@ -28,7 +29,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.2",
-    "tap": "^14.6.1"
+    "tap": "^14.10.7"
   },
   "author": "David Edelhart",
   "license": "MIT",

@@ -75,11 +75,32 @@ use a startFn to assure referential identity.
 
 Any of the above three-value calls, plus a custom handler that 
 is triggered when an error is generated. 
+
 No matter what onError does, it will NOT go on to assign the value to
 the property. Adding a fourth property will prevent your property from 
 throwing errors on bad data - its up to you to use it to manage bad data.
 
 onError receives `(value, target, result, name)`;
+
+**functional initializers for value**
+
+Some types are probelmatic when defined as value; objects, DOM, essentially any
+referential type. To prevent referential conflicts you can pass a *function*
+as an initializer; this will initialize the value of the property to a unique
+value. Also useful if for some awful reason you want to initialize the value
+to a unique/random value. 
+
+```javascript
+
+class Alpha {};
+proppify(Alpha)
+.addProp('myMap', () => new Map());
+
+const a = new Alpha();
+a.myMap.set('omega', 'o');
+const b = new Alpha();
+console.log('has omega:', b.myMap.has('omega')); // false
+```
 
 # Advanced AddProp forms
 

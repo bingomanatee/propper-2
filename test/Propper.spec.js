@@ -379,6 +379,48 @@ tap.test(p.name, (suite) => {
       a.end();
     });
 
+    p.test('functional defaultValue', (fdv) => {
+      fdv.test('problem - referential identity', (ri) => {
+        class Alpha {
+
+        }
+
+        proppify(Alpha)
+          .addProp('myMap', new Map());
+
+        const a1 = new Alpha();
+        a1.myMap.set('omega', 'o');
+        const a2 = new Alpha();
+
+        ri.ok(a1.myMap === a2.myMap); // problematic - we don't want referential types to be the same.
+        const omega2 = a2.myMap.get('omega');
+        ri.equal(omega2, 'o');
+        ri.end();
+      });
+
+      fdv.test('solution - functional initializers', (fi) => {
+        class Alpha {
+
+        }
+
+        proppify(Alpha)
+          .addProp('myMap', () => new Map());
+
+        const a1 = new Alpha();
+
+        a1.myMap.set('omega', 'o');
+        const a2 = new Alpha();
+
+        fi.notOk(a1.myMap === a2.myMap); // problematic - we don't want referential types to be the same.
+        fi.notStrictEqual(a2.myMap.get('omega'), 'o');
+
+        fi.end();
+      });
+
+
+      fdv.end();
+    });
+
     p.end();
   });
 
