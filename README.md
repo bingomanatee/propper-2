@@ -5,7 +5,7 @@ on class properties, and set type and default value with one stroke.
 
 Partly the desire was to vastly reduce the profile of propper; 
 as it is fundamental to so many of my projects I wanted to reduce
-the file size of it to be as small as possible. (It weighs in at 13k.)
+the file size of it to be as small as possible. (It weighs in at 2k.)
 
 Also I wanted to reduce the interface to emphasize the features I used the most 
 to make it easy to use; also to make it similar in profile to looking glass -- property, value, type. 

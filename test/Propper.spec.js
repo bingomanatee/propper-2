@@ -1,7 +1,12 @@
 /* eslint-disable camelcase */
 const tap = require('tap');
-const is = require('is');
+const validators = require('@wonderlandlabs/validators');
 const p = require('./../package.json');
+
+const val = validators();
+const isString = val.is('string');
+const isNumber = val.is('number');
+const isInteger = val.is('integer');
 
 const { proppify } = require('./../lib/index');
 
@@ -129,7 +134,7 @@ tap.test(p.name, (suite) => {
       const goodName = (value, fieldName) => {
         let message = false;
 
-        if (!is.string(value)) {
+        if (!isString(value)) {
           message = `attempt to set ${fieldName} to ${value}; string required`;
         } else if (!/^[\w]+$/.test(value)) {
           message = `attempt to set ${fieldName} to ${value}; only word characters accepted`;
@@ -261,7 +266,7 @@ tap.test(p.name, (suite) => {
 
       proppify(Range)
         .addProp('min', 0, 'integer', (value, target, result) => {
-          if (is.number(value) && !is.integer(value)) {
+          if (isNumber(value) && !isInteger(value)) {
             target.min = Math.round(value);
           }
         })

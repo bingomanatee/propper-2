@@ -1,6 +1,11 @@
-/* eslint-disable no-param-reassign */
-import is from 'is';
-import lGet from './lodash/get';
+/* eslint-disable no-param-reassign,prefer-const */
+import validators from '@wonderlandlabs/validators';
+
+const val = validators();
+
+const isFunction = val.is('function');
+const isObject = val.is('object');
+const isString = val.is('string');
 
 class SchemaDef {
   constructor(name, type, config = {}) {
@@ -11,14 +16,14 @@ class SchemaDef {
 }
 
 function makeTypeTest(name, type) {
-  if (type in is) {
-    const isTest = is[type];
+  if (val.has(type)) {
+    const isTest = val.is(type);
     // eslint-disable-next-line arrow-body-style
     return (value) => {
       return (isTest(value) ? null : `attempt to assign bad value to ${name} ${value} failed type test ${type}`);
     };
   }
-  throw new Error(`no test named ${type}`);
+  throw new Error(`no validator named ${type}`);
 }
 
 function makeRETest(name, re) {
@@ -37,7 +42,7 @@ const propNameTest = makeRETest('property', /^[\w]+$/);
 export default class Propper {
   constructor(targetClass, instanceName = 'instance') {
     this.targetClass = targetClass;
-    this.instanceName = instanceName || lGet(targetClass, 'constructor.name', 'instance');
+    this.instanceName = instanceName;
   }
 
   makeOnBadValue(name, type) {
@@ -45,7 +50,7 @@ export default class Propper {
 
     let clause = '';
 
-    if (type && typeof type === 'string') {
+    if (type && isString(type)) {
       clause = `; requires ${type}`;
     }
 
@@ -64,60 +69,45 @@ export default class Propper {
     };
   }
 
-  makeOnBadValueWarn(name, type) {
-    const { instanceName } = this;
-
-    let clause = '';
-
-    if (type && typeof type === 'string') {
-      clause = `; requires ${type}`;
-    }
-
-    return (value) => {
-      let message = '';
-      try {
-        message = `attempt to assign bad value ${value} to ${name} of ${instanceName}${clause}`;
-      } catch {
-        message = `attempt to assign bad value to ${name} of ${instanceName}${clause}`;
-      }
-      console.log(message);
-    };
-  }
-
   addProp(name, defaultValue = undefined, type = null, config = {}) {
     const nameErr = propNameTest(name);
     if (nameErr) throw new Error(nameErr);
 
     let uOnBadValue = null;
-    if (is.function(config)) {
+
+    if (isFunction(config)) {
       uOnBadValue = config;
       config = {};
-    } else if (is.object(defaultValue) && !type) {
+    } else if (isObject(defaultValue) && !type) {
       config = defaultValue;
-    } else if (is.object(type)) {
-      config = type;
-      type = lGet(type, 'type', null);
+    } else if (isObject(type)) {
+      if (!(type instanceof RegExp)) {
+        config = type;
+        type = type.type || null;
+      }
     }
 
-    /**
-     * whether the first attempt to get actually sets the local property.
-     *
-     * @type {*}
-     */
-    let setOnGet = lGet(config, 'setOnGet', true);
-    const localName = lGet(config, 'localName', `_${name}`);
-    let start = lGet(config, 'start', false);
-    const onChange = lGet(config, 'onChange', () => {
-    });
-    const enumerable = lGet(config, 'enumerable', true);
-    if ('defaultValue' in config) {
-      defaultValue = lGet(config, 'defaultValue');
+    let {
+      onChange, localName,
+      start,
+      enumerable,
+      defaultValue: defDefaultValue,
+      onBadValue,
+      test: validationErrors,
+    } = {
+      localName: `_${name}`,
+      onChange: () => {
+      },
+      onBadValue: this.makeOnBadValue(name, type),
+      enumerable: true,
+      ...config,
+    };
+
+    if (defDefaultValue) {
+      defaultValue = defDefaultValue;
     }
 
-    let onBadValue = uOnBadValue || lGet(config, 'onBadValue', this.makeOnBadValue(name, type));
-    if (onBadValue === 'warn') {
-      onBadValue = this.makeOnBadValueWarn(name, type);
-    }
+    if (uOnBadValue) onBadValue = uOnBadValue;
 
     /**
      * start exists as a factory for the initial value.
@@ -132,9 +122,8 @@ export default class Propper {
      * to the SAME value, which can be bad.
      */
     if (!start) {
-      if (is.function(defaultValue) && (type !== 'function')) {
+      if (isFunction(defaultValue) && (!isFunction(type))) {
         start = defaultValue;
-        setOnGet = true;
       } else if (Array.isArray(defaultValue)) {
         // we really try to save you from yourself....
         start = () => {
@@ -142,27 +131,24 @@ export default class Propper {
           // but not THAT hard;
           return [...defaultValue];
         };
-        setOnGet = true;
       } else {
         start = () => defaultValue;
       }
     }
 
-    let validationErrors = lGet(config, 'test', null);
-
     if (type) {
-      if (typeof type === 'string') {
+      if (isString(type)) {
         validationErrors = makeTypeTest(name, type);
-      } else if (typeof type === 'function') {
+      } else if (isFunction(type)) {
         validationErrors = (value) => type(value, name);
-      } else if (is.regexp(type)) {
+      } else if (type instanceof RegExp) {
         validationErrors = makeRETest(name, type);
       }
-    } else if (typeof validationErrors === 'string') {
+    } else if (isString(validationErrors)) {
       validationErrors = makeTypeTest(name, validationErrors);
     }
 
-    if (typeof validationErrors !== 'function') {
+    if (!isFunction(validationErrors)) {
       validationErrors = null;
     }
 
@@ -171,11 +157,7 @@ export default class Propper {
       enumerable,
       get() {
         if (!(localName in this)) {
-          if (setOnGet) {
-            this[localName] = start();
-          } else {
-            return start();
-          }
+          this[localName] = start();
         }
         return this[localName];
       },
@@ -193,9 +175,9 @@ export default class Propper {
             return;
           }
         }
-        const lastValue = lGet(this, localName, undefined);
+        const lastValue = this[localName];
         this[localName] = value;
-        if (value !== lastValue) onChange(value, lastValue, this, name);
+        if (onChange && (value !== lastValue)) onChange(value, lastValue, this, name);
       },
     };
 

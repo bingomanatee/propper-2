@@ -382,6 +382,11 @@
   dependencies:
     "@types/node" "*"
 
+"@wonderlandlabs/validators@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@wonderlandlabs/validators/-/validators-1.0.2.tgz#27a6f801f82db6088ba1e18e8fdccadc1376226d"
+  integrity sha512-VnTRwLjNJCq66/8IOup6vJ9fjYz867PfBz4ib5tv1bdOf1a3mdAX0eFX8rL0fR8Gy4xqbUfPSQO3LpgiDSbwLQ==
+
 acorn-jsx@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.2.tgz#84b68ea44b373c4f8686023a551f61a21b7c4a4f"
@@ -1750,11 +1755,6 @@ is-typedarray@^1.0.0, is-typedarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-typedarray/-/is-typedarray-1.0.0.tgz#e479c80858df0c1b11ddda6940f96011fcda4a9a"
   integrity sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=
-
-is@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/is/-/is-3.3.0.tgz#61cff6dd3c4193db94a3d62582072b44e5645d79"
-  integrity sha512-nW24QBoPcFGGHJGUwnfpI7Yc5CdqWNdsyHQszVE/z2pKHXzh7FZ5GWhJqSyaQ9wMkQnsTx+kAI8bHlCX4tKdbg==
 
 isarray@^1.0.0, isarray@~1.0.0:
   version "1.0.0"

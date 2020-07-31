@@ -1,6 +1,6 @@
 {
   "name": "@wonderlandlabs/propper",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "a utility to define properties for classes",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -15,16 +15,16 @@
     "build": "node_modules/rollup/dist/bin/rollup -c='rollup.config.js'"
   },
   "dependencies": {
-    "is": "^3.3.0"
+    "@wonderlandlabs/validators": "1.0.2"
   },
   "devDependencies": {
-    "eslint": "^6.3.0",
     "babel-eslint": "^10.0.3",
-    "eslint-plugin-react-hooks": "^2.1.1",
+    "eslint": "^6.3.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.1",
     "rollup": "^1.22.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
